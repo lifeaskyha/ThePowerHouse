@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FDF6EC;
+    --peach:#F4B183;
+    --gold:#F2C14E;
+    --magenta:#D6336C;
+    --red:#E63946;
+    --burgundy:#6A0F23;
+    --noir:#1C1210;
+    --ink:#241A18;
+    --line:rgba(28,18,16,0.1);
+    --shadow: 0 10px 30px rgba(28,18,16,0.18);
+    --radius: 16px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at top left, rgba(214,51,108,0.18), transparent 55%),
+      radial-gradient(ellipse at bottom right, rgba(106,15,35,0.35), transparent 55%),
+      var(--noir);
+    color:var(--cream);
+    font-family:'Jost', sans-serif;
+    min-height:100vh;
+    padding-bottom:60px;
+  }
+  h1,h2,h3,.display{font-family:'Playfair Display', serif;}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 0;}
+
+  /* ---------- HEADER ---------- */
+  header.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:14px;margin-bottom:22px;}
+  .brand-eyebrow{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--peach);margin:0 0 4px;}
+  .brand-title{font-style:italic;font-weight:700;font-size:clamp(28px,4vw,42px);margin:0;color:var(--cream);}
+  .week-badge{
+    background:linear-gradient(135deg, var(--burgundy), var(--magenta));
+    border-radius:999px;padding:10px 20px;font-size:13px;letter-spacing:.04em;
+    box-shadow:var(--shadow); white-space:nowrap;
+  }
+  .week-badge b{font-family:'Playfair Display',serif;font-style:italic;}
+
+  /* ---------- NAV ---------- */
+  nav.tabs{
+    display:flex;gap:6px;flex-wrap:wrap;
+    background:rgba(253,246,236,0.05);
+    border:1px solid rgba(253,246,236,0.1);
+    padding:6px;border-radius:999px;margin-bottom:26px;
+    backdrop-filter:blur(6px);
+  }
+  nav.tabs button{
+    flex:1 1 auto;min-width:110px;
+    border:none;background:transparent;color:var(--cream);opacity:.65;
+    font-family:'Jost',sans-serif;font-size:13px;letter-spacing:.05em;text-transform:uppercase;
+    padding:11px 14px;border-radius:999px;cursor:pointer;transition:.2s;
+  }
+  nav.tabs button:hover{opacity:1;}
+  nav.tabs button.active{
+    opacity:1;color:var(--noir);
+    background:linear-gradient(120deg, var(--gold), var(--peach));
+    font-weight:600; box-shadow:var(--shadow);
+  }
+
+  section.tab{display:none;animation:fade .35s ease;}
+  section.tab.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  .card{
+    background:linear-gradient(160deg, rgba(253,246,236,0.06), rgba(253,246,236,0.02));
+    border:1px solid rgba(253,246,236,0.12);
+    border-radius:var(--radius);
+    padding:22px;
+    margin-bottom:20px;
+  }
+  .card h2{margin:0 0 4px;font-size:20px;font-style:italic;}
+  .card .sub{font-size:12px;color:var(--peach);text-transform:uppercase;letter-spacing:.12em;margin-bottom:16px;}
+  .grid-2{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media(max-width:860px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+
+  button.btn{
+    font-family:'Jost',sans-serif;border:none;cursor:pointer;border-radius:10px;
+    padding:11px 18px;font-size:13px;letter-spacing:.03em;font-weight:500;transition:.15s;
+  }
+  .btn-primary{background:linear-gradient(120deg,var(--magenta),var(--burgundy));color:var(--cream);}
+  .btn-primary:hover{filter:brightness(1.1);}
+  .btn-ghost{background:rgba(253,246,236,0.08);color:var(--cream);border:1px solid rgba(253,246,236,0.2);}
+  .btn-ghost:hover{background:rgba(253,246,236,0.15);}
+  .btn-gold{background:linear-gradient(120deg,var(--gold),var(--peach));color:var(--noir);font-weight:600;}
+  .btn-sm{padding:7px 12px;font-size:12px;border-radius:8px;}
+  .btn-danger{background:rgba(230,57,70,0.18);color:#ffb4ba;border:1px solid rgba(230,57,70,0.4);}
+
+  input[type=text],input[type=number],input[type=date],select,textarea{
+    width:100%;background:rgba(253,246,236,0.07);border:1px solid rgba(253,246,236,0.18);
+    color:var(--cream);border-radius:9px;padding:9px 12px;font-family:'Jost',sans-serif;font-size:13.5px;
+  }
+  textarea{resize:vertical;min-height:64px;}
+  label{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--peach);display:block;margin-bottom:5px;}
+  .field{margin-bottom:12px;}
+
+  /* ---------- NON-NEGOTIABLES ---------- */
+  .nn-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:rgba(253,246,236,0.05);margin-bottom:8px;}
+  .nn-item input[type=checkbox]{width:19px;height:19px;accent-color:var(--gold);}
+  .nn-item span.done{text-decoration:line-through;opacity:.5;}
+
+  /* ---------- PROGRESS ---------- */
+  .prog-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+  .prog-label{width:90px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--peach);}
+  .prog-track{flex:1;height:14px;background:rgba(253,246,236,0.08);border-radius:999px;overflow:hidden;}
+  .prog-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--gold),var(--magenta));}
+  .prog-pct{width:42px;text-align:right;font-size:12px;color:var(--cream);}
+
+  /* ---------- GOALS / PRIORITY ---------- */
+  .goal-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);}
+  .goal-row:last-child{border-bottom:none;}
+  .pill{padding:3px 10px;border-radius:999px;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
+  .pill-high{background:var(--red);color:#fff;}
+  .pill-medium{background:var(--gold);color:var(--noir);}
+  .pill-low{background:rgba(253,246,236,0.15);color:var(--cream);}
+
+  /* ---------- TOGGLE SWITCH ---------- */
+  .toggle-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);}
+  .toggle-row:last-child{border-bottom:none;}
+  .switch{position:relative;width:120px;height:34px;background:rgba(253,246,236,0.1);border-radius:999px;cursor:pointer;display:flex;align-items:center;padding:3px;}
+  .switch .knob{position:absolute;top:3px;left:3px;width:58px;height:28px;border-radius:999px;background:linear-gradient(120deg,var(--magenta),var(--burgundy));transition:.25s;display:flex;align-items:center;justify-content:center;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;}
+  .switch.right .knob{left:59px;background:linear-gradient(120deg,var(--gold),var(--peach));color:var(--noir);}
+  .switch .lbl{position:absolute;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:rgba(253,246,236,0.55);}
+  .switch .lbl.l{left:10px;} .switch .lbl.r{right:8px;}
+
+  /* ---------- SCHEDULE GRID ---------- */
+  .sched-controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;}
+  .mode-chip{display:flex;flex-direction:column;align-items:center;gap:6px;background:rgba(253,246,236,0.05);border-radius:12px;padding:8px 10px;}
+  .mode-chip .day-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--peach);}
+  .mini-toggle{display:flex;border-radius:999px;overflow:hidden;border:1px solid rgba(253,246,236,0.2);}
+  .mini-toggle button{border:none;background:transparent;color:var(--cream);font-size:11px;padding:5px 10px;cursor:pointer;opacity:.6;}
+  .mini-toggle button.on{opacity:1;background:linear-gradient(120deg,var(--magenta),var(--burgundy));}
+  .sched-scroll{overflow-x:auto;}
+  .sched-grid{
+    display:grid;
+    grid-template-columns:56px repeat(7, minmax(118px,1fr));
+    grid-auto-rows:20px;
+    min-width:900px;
+    position:relative;
+  }
+  .time-lbl{grid-column:1;font-size:10px;color:rgba(253,246,236,0.4);text-align:right;padding-right:8px;transform:translateY(-6px);}
+  .day-head{position:sticky;top:0;background:var(--noir);padding:8px 4px;font-size:12px;text-align:center;border-bottom:2px solid rgba(253,246,236,0.15);z-index:2;}
+  .day-head b{display:block;font-family:'Playfair Display',serif;font-style:italic;font-size:14px;}
+  .grid-line{grid-column:2/9;border-top:1px solid rgba(253,246,236,0.06);}
+  .block{
+    margin:1px 3px;border-radius:8px;padding:6px 8px;font-size:11px;line-height:1.25;
+    box-shadow:0 4px 10px rgba(0,0,0,0.25);overflow:hidden;position:relative;
+  }
+  .block .t{display:block;font-size:9.5px;opacity:.85;margin-bottom:2px;text-transform:uppercase;letter-spacing:.03em;}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;}
+  .legend span{display:flex;align-items:center;gap:6px;font-size:11.5px;color:rgba(253,246,236,0.75);}
+  .legend i{width:11px;height:11px;border-radius:3px;display:inline-block;}
+
+  /* ---------- TASK CARDS ---------- */
+  .day-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;}
+  .day-card h3{margin:0 0 2px;font-style:italic;}
+  .day-card .date{font-size:11px;color:var(--peach);margin-bottom:10px;}
+  .mini-block{display:flex;align-items:center;gap:6px;font-size:11px;padding:3px 0;color:rgba(253,246,236,0.7);}
+  .mini-block i{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .task-item{display:flex;align-items:flex-start;gap:8px;background:rgba(253,246,236,0.05);border-radius:9px;padding:8px 10px;margin-top:8px;}
+  .task-item input[type=checkbox]{margin-top:2px;accent-color:var(--gold);}
+  .task-item .txt{flex:1;font-size:12.5px;}
+  .task-item .txt.done{text-decoration:line-through;opacity:.45;}
+  .task-item .meta{font-size:10px;color:var(--peach);text-transform:uppercase;letter-spacing:.04em;}
+  .task-item .del{background:none;border:none;color:rgba(253,246,236,0.4);cursor:pointer;font-size:14px;line-height:1;}
+  .task-item .del:hover{color:var(--red);}
+  details.add-task{margin-top:12px;}
+  details.add-task summary{cursor:pointer;font-size:12px;color:var(--gold);list-style:none;}
+  details.add-task summary::-webkit-details-marker{display:none;}
+  details.add-task .box{margin-top:10px;display:flex;flex-direction:column;gap:8px;}
+
+  /* ---------- 12 WEEK YEAR ---------- */
+  .week-track{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:10px;}
+  .wk-cell{aspect-ratio:1;border-radius:5px;background:rgba(253,246,236,0.08);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;color:rgba(253,246,236,0.4);border:1px solid transparent;}
+  .wk-cell.done{background:linear-gradient(135deg,var(--gold),var(--magenta));color:var(--noir);font-weight:700;}
+  .wk-cell.current{border-color:var(--gold);}
+  .goal-card{background:rgba(253,246,236,0.05);border-radius:12px;padding:14px 16px;margin-bottom:14px;}
+  .goal-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+
+  /* ---------- REVIEW FORM ---------- */
+  .review-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:760px){.review-grid{grid-template-columns:1fr;}}
+  .mood-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .mood-btn{padding:8px 14px;border-radius:999px;border:1px solid rgba(253,246,236,0.2);background:rgba(253,246,236,0.05);color:var(--cream);cursor:pointer;font-size:13px;}
+  .mood-btn.sel{background:linear-gradient(120deg,var(--magenta),var(--burgundy));border-color:transparent;font-weight:600;}
+
+  /* ---------- BUDGET ---------- */
+  table.budget-table{width:100%;border-collapse:collapse;font-size:13px;}
+  table.budget-table th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--peach);padding:6px 8px;border-bottom:1px solid var(--line);}
+  table.budget-table td{padding:8px;border-bottom:1px solid var(--line);vertical-align:middle;}
+  table.budget-table input{padding:6px 8px;font-size:12.5px;}
+  .cat-bar-track{height:8px;background:rgba(253,246,236,0.08);border-radius:999px;overflow:hidden;margin-top:5px;}
+  .cat-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--red));}
+  .stat-tile{background:rgba(253,246,236,0.06);border-radius:12px;padding:16px;text-align:center;}
+  .stat-tile .num{font-family:'Playfair Display',serif;font-style:italic;font-size:26px;}
+  .stat-tile .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--peach);margin-top:4px;}
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay{position:fixed;inset:0;background:rgba(20,10,10,0.78);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:50;padding:20px;}
+  .modal-overlay.show{display:flex;}
+  .modal-box{
+    background:linear-gradient(160deg, #2a1712, var(--noir));
+    border:1px solid rgba(253,246,236,0.15);
+    border-radius:20px;max-width:480px;width:100%;padding:30px;box-shadow:0 30px 80px rgba(0,0,0,0.6);
+    position:relative;
+  }
+  .modal-box .eyebrow{color:var(--gold);font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px;}
+  .modal-box h2{font-size:26px;margin:0 0 4px;font-style:italic;}
+  .modal-box p.hint{font-size:12.5px;color:rgba(253,246,236,0.6);margin-bottom:20px;}
+  .modal-box .nn-input{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+  .modal-box .nn-input span{font-family:'Playfair Display',serif;font-style:italic;color:var(--gold);width:16px;}
+  .modal-actions{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+  .skip-link{background:none;border:none;color:rgba(253,246,236,0.45);font-size:12px;cursor:pointer;text-decoration:underline;}
+
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:linear-gradient(120deg,var(--gold),var(--peach));color:var(--noir);padding:10px 20px;border-radius:999px;font-size:13px;font-weight:600;box-shadow:var(--shadow);z-index:80;opacity:0;pointer-events:none;transition:.3s;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+
+  .empty{font-size:12.5px;color:rgba(253,246,236,0.4);font-style:italic;padding:10px 0;}
+  hr.soft{border:none;border-top:1px solid var(--line);margin:16px 0;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="brand-eyebrow">Weekly Command Center</p>
+      <h1 class="brand-title">Walk in it.</h1>
+    </div>
+    <div class="week-badge" id="weekBadge">Loading week…</div>
+  </header>
+
+  <nav class="tabs" id="tabNav">
+    <button data-tab="dashboard" class="active">Dashboard</button>
+    <button data-tab="schedule">Schedule</button>
+    <button data-tab="tasks">Tasks</button>
+    <button data-tab="twelveweek">12 Week Year</button>
+    <button data-tab="review">Friday Review</button>
+    <button data-tab="budget">Budget</button>
+  </nav>
+
+  <!-- ============ DASHBOARD ============ -->
+  <section class="tab active" id="tab-dashboard">
+    <div class="grid-2">
+      <div class="card">
+        <h2>This week vs last week</h2>
+        <p class="sub">Task completion</p>
+        <div class="prog-row">
+          <div class="prog-label">This week</div>
+          <div class="prog-track"><div class="prog-fill" id="progThis" style="width:0%"></div></div>
+          <div class="prog-pct" id="progThisPct">0%</div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-label">Last week</div>
+          <div class="prog-track"><div class="prog-fill" id="progLast" style="width:0%;background:linear-gradient(90deg,var(--peach),var(--burgundy));"></div></div>
+          <div class="prog-pct" id="progLastPct">0%</div>
+        </div>
+        <p class="empty" id="progNote"></p>
+      </div>
+
+      <div class="card">
+        <h2>Non-negotiables</h2>
+        <p class="sub">This week</p>
+        <div id="nnList"></div>
+        <button class="btn btn-ghost btn-sm" id="openIntentionBtn" style="margin-top:8px;">Set weekly intention</button>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h2>12 Week Year — priorities</h2>
+        <p class="sub" id="twYearSub">Week — of 12</p>
+        <div id="dashGoals"></div>
+      </div>
+
+      <div class="card">
+        <h2>Rotation</h2>
+        <p class="sub">Evening swaps</p>
+        <div class="toggle-row">
+          <div>
+            <div style="font-weight:500;">Wednesday</div>
+            <div style="font-size:11px;color:rgba(253,246,236,0.5);">Bible Study / Free evening</div>
+          </div>
+          <div class="switch" id="toggleWed"><span class="lbl l">Bible</span><span class="lbl r">Free</span><div class="knob"></div></div>
+        </div>
+        <div class="toggle-row">
+          <div>
+            <div style="font-weight:500;">Thursday</div>
+            <div style="font-size:11px;color:rgba(253,246,236,0.5);">Therapy / Rest evening</div>
+          </div>
+          <div class="switch" id="toggleThu"><span class="lbl l">Therapy</span><span class="lbl r">Rest</span><div class="knob"></div></div>
+        </div>
+
+        <hr class="soft">
+        <h2 style="font-size:16px;">Google Calendar</h2>
+        <p class="sub">Push this week's blocks</p>
+        <button class="btn btn-gold btn-sm" id="gcalBtn">Connect &amp; export week</button>
+        <p class="empty" style="margin-top:8px;">Downloads a calendar file that imports straight into Google Calendar in two taps — see note below.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCHEDULE ============ -->
+  <section class="tab" id="tab-schedule">
+    <div class="card">
+      <h2>Weekly Schedule</h2>
+      <p class="sub">Color-coded time blocks — toggle each day's mode</p>
+      <div class="sched-controls" id="modeControls"></div>
+      <p class="sub" style="margin-top:4px;">Late-night gym — aim for 3–4 nights</p>
+      <div class="sched-controls" id="gymControls"></div>
+      <div class="sched-scroll">
+        <div class="sched-grid" id="schedGrid"></div>
+      </div>
+      <div class="legend" id="legend"></div>
+    </div>
+  </section>
+
+  <!-- ============ TASKS ============ -->
+  <section class="tab" id="tab-tasks">
+    <div class="card">
+      <h2>Tasks by Day</h2>
+      <p class="sub">Mon – Fri · tie each task to a 12 Week Year focus</p>
+      <div class="day-cards" id="dayCards"></div>
+    </div>
+  </section>
+
+  <!-- ============ 12 WEEK YEAR ============ -->
+  <section class="tab" id="tab-twelveweek">
+    <div class="grid-2">
+      <div class="card">
+        <h2>Program</h2>
+        <p class="sub" id="twSub2">Week — of 12</p>
+        <p class="empty" id="twDates"></p>
+        <button class="btn btn-ghost btn-sm" id="resetProgramBtn">Start a new 12-week cycle</button>
+      </div>
+      <div class="card">
+        <h2>This week's execution</h2>
+        <p class="sub">The scoreboard — your only real lead indicator</p>
+        <div class="stat-tile" id="scoreTile" style="text-align:left;padding:10px 0;">
+          <div class="num" id="scorePct">—</div>
+          <div class="lbl">tactics completed this week</div>
+        </div>
+        <p class="empty">85%+ execution weeks are what actually move the needle — not the weeks you feel busy.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>12-Week Vision</h2>
+      <p class="sub">If these 12 weeks go exactly right, what does that look like?</p>
+      <textarea id="visionText" placeholder="Paint the picture — what's true at the end of week 12 that isn't true today?"></textarea>
+    </div>
+
+    <div class="card">
+      <h2>Goals</h2>
+      <p class="sub">2–3 goals max. Each one needs weekly tactics — the actions that actually move it.</p>
+      <div id="goalsFull"></div>
+      <details class="add-task">
+        <summary>+ Add a 12-week goal</summary>
+        <div class="box">
+          <div class="field"><label>Goal</label><input type="text" id="goalTitle" placeholder="e.g. Post lifestyle content 4x/week"></div>
+          <div class="field"><label>Priority</label>
+            <select id="goalPriority"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select>
+          </div>
+          <button class="btn btn-primary btn-sm" id="addGoalBtn">Add goal</button>
+        </div>
+      </details>
+    </div>
+
+  </section>
+
+  <!-- ============ FRIDAY REVIEW ============ -->
+  <section class="tab" id="tab-review">
+    <div class="card">
+      <h2>Friday Review</h2>
+      <p class="sub" id="reviewSub">End of week audit</p>
+      <div class="review-grid">
+        <div class="field"><label>Wins this week</label><textarea id="rvWins" placeholder="What actually got done, even small…"></textarea></div>
+        <div class="field"><label>What did I avoid?</label><textarea id="rvAvoided" placeholder="Be honest — what did you push or delegate?"></textarea></div>
+        <div class="field"><label>What carries over to next week?</label><textarea id="rvCarry" placeholder="Unfinished business…"></textarea></div>
+        <div class="field"><label>Block accountability — did I protect my time blocks?</label><textarea id="rvBlocks" placeholder="Where did the schedule hold, where did it slip?"></textarea></div>
+      </div>
+      <div class="field">
+        <label>How am I feeling?</label>
+        <div class="mood-row" id="moodRow"></div>
+      </div>
+      <div class="field"><label>Faith check</label><textarea id="rvFaith" placeholder="Where did I see God move / where did I lean on my own strength?"></textarea></div>
+      <button class="btn btn-primary" id="saveReviewBtn">Save this week's review</button>
+      <span class="empty" id="reviewSaved" style="margin-left:10px;"></span>
+    </div>
+  </section>
+
+  <!-- ============ BUDGET ============ -->
+  <section class="tab" id="tab-budget">
+    <div class="grid-3" id="budgetStats"></div>
+    <div class="card">
+      <h2>Monthly Budget</h2>
+      <p class="sub">Weekly pay · updated daily</p>
+      <div class="field" style="max-width:220px;">
+        <label>Weekly pay</label>
+        <input type="number" id="weeklyPay" placeholder="0.00">
+      </div>
+      <table class="budget-table">
+        <thead><tr><th>Category</th><th>Budgeted</th><th>Spent</th><th>Remaining</th><th></th></tr></thead>
+        <tbody id="budgetRows"></tbody>
+      </table>
+      <button class="btn btn-ghost btn-sm" id="addCatBtn" style="margin-top:10px;">+ Add category</button>
+    </div>
+
+    <div class="card">
+      <h2>Log a spend</h2>
+      <p class="sub">Today's date auto-fills — edit if logging back</p>
+      <div class="grid-3">
+        <div class="field"><label>Date</label><input type="date" id="spendDate"></div>
+        <div class="field"><label>Category</label><select id="spendCat"></select></div>
+        <div class="field"><label>Amount</label><input type="number" id="spendAmt" placeholder="0.00"></div>
+      </div>
+      <div class="field"><label>Note</label><input type="text" id="spendNote" placeholder="optional"></div>
+      <button class="btn btn-primary btn-sm" id="addSpendBtn">Add entry</button>
+      <hr class="soft">
+      <div id="spendList"></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ============ MONDAY MODAL ============ -->
+<div class="modal-overlay" id="mondayModal">
+  <div class="modal-box">
+    <p class="eyebrow">Monday · Before anything else</p>
+    <h2>Set the tone for this week.</h2>
+    <p class="hint">One intention, three non-negotiables. Lock these in before you open Slack.</p>
+    <div class="field">
+      <label>This week's intention</label>
+      <textarea id="modalIntention" placeholder="What is this week actually about?"></textarea>
+    </div>
+    <label>Three non-negotiables</label>
+    <div class="nn-input"><span>1</span><input type="text" id="modalNN1" placeholder="e.g. Gym 4x this week"></div>
+    <div class="nn-input"><span>2</span><input type="text" id="modalNN2" placeholder="e.g. One content batch day"></div>
+    <div class="nn-input"><span>3</span><input type="text" id="modalNN3" placeholder="e.g. Devotion every morning"></div>
+    <div class="modal-actions">
+      <button class="skip-link" id="modalSkip">Not now</button>
+      <button class="btn btn-gold" id="modalSave">Start my week</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================================================================
+   STORAGE HELPERS
+=================================================================== */
+async function getData(key, fallback){
+  try{
+    const r = await window.storage.get(key, false);
+    if(!r || r.value === undefined || r.value === null) return fallback;
+    return JSON.parse(r.value);
+  }catch(e){ return fallback; }
+}
+async function setData(key, value){
+  try{ await window.storage.set(key, JSON.stringify(value), false); }
+  catch(e){ console.error('storage set failed', key, e); }
+}
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* ===================================================================
+   DATE / WEEK HELPERS
+=================================================================== */
+const DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const DAY_FULL = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+function getMonday(d){
+  const date = new Date(d);
+  const day = date.getDay(); // 0 Sun .. 6 Sat
+  const diff = (day === 0 ? -6 : 1 - day);
+  date.setDate(date.getDate() + diff);
+  date.setHours(0,0,0,0);
+  return date;
+}
+function isoDate(d){
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function fmtShort(d){ return d.toLocaleDateString('en-US',{month:'short', day:'numeric'}); }
+function addDays(d, n){ const nd = new Date(d); nd.setDate(nd.getDate()+n); return nd; }
+
+const TODAY = new Date();
+const MONDAY = getMonday(TODAY);
+const WEEK_KEY = isoDate(MONDAY);
+const LAST_MONDAY = addDays(MONDAY, -7);
+const LAST_WEEK_KEY = isoDate(LAST_MONDAY);
+const WEEK_DATES = DAY_NAMES.map((_,i)=> addDays(MONDAY, i));
+
+document.getElementById('weekBadge').innerHTML =
+  `Week of <b>${fmtShort(MONDAY)} – ${fmtShort(addDays(MONDAY,6))}</b>`;
+
+/* ===================================================================
+   CATEGORIES
+=================================================================== */
+const CATS = {
+  faith:     {label:'Faith',        color:'var(--burgundy)', text:'#FDF6EC'},
+  gym:       {label:'Gym',          color:'var(--gold)',     text:'#1C1210'},
+  work:      {label:'Databricks',   color:'var(--noir)',     text:'#FDF6EC', border:'1px solid rgba(253,246,236,0.25)'},
+  content:   {label:'Content',      color:'var(--magenta)',  text:'#FDF6EC'},
+  orgsocial: {label:'Org Social',   color:'var(--peach)',    text:'#1C1210'},
+  personal:  {label:'Personal',     color:'var(--cream)',    text:'#1C1210'},
+  reset:     {label:'Reset',        color:'var(--red)',      text:'#FDF6EC'},
+};
+
+/* ===================================================================
+   SCHEDULE BLOCK DEFINITIONS
+=================================================================== */
+function heavyBlocks(gymOn){
+  const blocks = [
+    {s:'7:45', e:'8:45', label:'Devotion + Breakfast', cat:'faith'},
+    {s:'8:45', e:'9:45', label:'Get ready / low-key admin', cat:'personal'},
+    {s:'9:45', e:'17:00', label:'Databricks (logged on, heads down)', cat:'work'},
+    {s:'17:00', e:'18:00', label:'Dinner', cat:'personal'},
+    {s:'18:00', e:'20:00', label:'Content Creation', cat:'content'},
+  ];
+  if(gymOn){
+    blocks.push({s:'20:00', e:'20:30', label:'Wind down / buffer', cat:'personal', rotatable:true});
+    blocks.push({s:'20:30', e:'21:30', label:'Gym (late night)', cat:'gym'});
+  } else {
+    blocks.push({s:'20:00', e:'21:30', label:'Wind down / buffer', cat:'personal', rotatable:true});
+  }
+  return blocks;
+}
+function lightBlocks(gymOn){
+  const blocks = [
+    {s:'7:45', e:'8:45', label:'Devotion + Breakfast', cat:'faith'},
+    {s:'8:45', e:'9:45', label:'Get ready / low-key admin', cat:'personal'},
+    {s:'9:45', e:'11:30', label:'Content Shoot/Edit + Databricks (background)', cat:'content'},
+    {s:'11:30', e:'13:30', label:'Org Social Media + Databricks (background)', cat:'orgsocial'},
+    {s:'13:30', e:'17:00', label:'Databricks (light) + coffee shop', cat:'work'},
+    {s:'17:00', e:'18:00', label:'Dinner', cat:'personal'},
+  ];
+  if(gymOn){
+    blocks.push({s:'18:00', e:'20:00', label:'Flex block', cat:'personal', rotatable:true});
+    blocks.push({s:'20:30', e:'21:30', label:'Gym (late night)', cat:'gym'});
+  } else {
+    blocks.push({s:'18:00', e:'21:30', label:'Flex block', cat:'personal', rotatable:true});
+  }
+  return blocks;
+}
+function applyRotation(blocks, dayName, rotation){
+  if(dayName==='Wed'){
+    const label = rotation.wed==='bible' ? 'Bible Study' : 'Free evening';
+    blocks = blocks.map(b=> b.rotatable ? {...b, label, cat: rotation.wed==='bible'?'faith':'personal'} : b);
+  }
+  if(dayName==='Thu'){
+    const label = rotation.thu==='therapy' ? 'Therapy' : 'Rest';
+    blocks = blocks.map(b=> b.rotatable ? {...b, label, cat: rotation.thu==='therapy'?'faith':'personal'} : b);
+  }
+  return blocks;
+}
+function weekendBlocks(dayName, mode, gymOn){
+  if(dayName==='Sun'){
+    const blocks = [
+      {s:'10:30', e:'12:00', label:'Church', cat:'faith'},
+      {s:'12:00', e:'13:00', label:'Meal prep + batch org social posts', cat:'orgsocial'},
+      {s:'13:00', e:'14:00', label:'Plan content shoot day', cat:'content'},
+    ];
+    if(gymOn) blocks.push({s:'20:30', e:'21:30', label:'Gym (late night)', cat:'gym'});
+    return blocks;
+  }
+  // Saturday
+  let blocks;
+  if(mode==='travel'){
+    blocks = [
+      {s:'6:30', e:'7:30', label:'Long walk', cat:'personal'},
+      {s:'7:30', e:'8:00', label:'Devotion', cat:'faith'},
+      {s:'9:00', e:'20:00', label:'Travel + content capture', cat:'content'},
+    ];
+  } else {
+    blocks = [
+      {s:'6:30', e:'7:30', label:'Long walk', cat:'personal'},
+      {s:'7:30', e:'8:30', label:'Devotion + Breakfast', cat:'faith'},
+      {s:'11:00', e:'13:30', label:'Deep edit block', cat:'content'},
+      {s:'14:00', e:'20:00', label:'Actual rest', cat:'personal'},
+    ];
+  }
+  if(gymOn) blocks.push({s:'20:30', e:'21:30', label:'Gym (late night)', cat:'gym'});
+  return blocks;
+}
+function getBlocksFor(dayName, mode, rotation, gymOn){
+  if(dayName==='Sat' || dayName==='Sun') return weekendBlocks(dayName, mode, gymOn);
+  let blocks = mode==='heavy' ? heavyBlocks(gymOn) : lightBlocks(gymOn);
+  return applyRotation(blocks, dayName, rotation);
+}
+
+/* ===================================================================
+   TAB NAVIGATION
+=================================================================== */
+document.getElementById('tabNav').addEventListener('click', e=>{
+  const btn = e.target.closest('button[data-tab]');
+  if(!btn) return;
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('section.tab').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+});
+
+/* ===================================================================
+   APP STATE
+=================================================================== */
+let STATE = {
+  weekdata: null,        // {intention, nonNegotiables:[{text,done}], mondaySet}
+  lastWeekTasks: [],
+  tasks: [],              // this week's tasks
+  rotation: {wed:'bible', thu:'therapy'},
+  goals: [],
+  scheduleModes: {},
+  gymDays: {},
+  programStart: null,
+  vision: '',
+  review: null,
+  budget: null,
+};
+
+/* ===================================================================
+   INIT
+=================================================================== */
+async function init(){
+  STATE.weekdata = await getData('weekdata:'+WEEK_KEY, {intention:'', nonNegotiables:[], mondaySet:false});
+  STATE.lastWeekTasks = await getData('tasks:'+LAST_WEEK_KEY, []);
+  STATE.tasks = await getData('tasks:'+WEEK_KEY, []);
+  STATE.rotation = await getData('rotation', {wed:'bible', thu:'therapy'});
+  STATE.goals = await getData('goals12week', []);
+  STATE.programStart = await getData('twelveWeekProgramStart', WEEK_KEY);
+  STATE.vision = await getData('twelveWeekVision', '');
+  STATE.scheduleModes = await getData('scheduleModes:'+WEEK_KEY, defaultModes());
+  STATE.gymDays = await getData('gymDays:'+WEEK_KEY, defaultGymDays());
+  STATE.review = await getData('fridayreview:'+WEEK_KEY, null);
+  STATE.budget = await getData('budget', {categories:[
+      {name:'Rent', budget:0},{name:'Utilities', budget:0},{name:'Car Payment', budget:0},
+      {name:'Groceries', budget:0},{name:'Fun Money', budget:0},{name:'Random Spending', budget:0},{name:'Everything Else', budget:0}
+    ], entries:[], weeklyPay:0});
+
+  renderDashboard();
+  renderRotation();
+  renderSchedule();
+  renderTasksTab();
+  renderGoalsTab();
+  renderVision();
+  renderReviewTab();
+  renderBudgetTab();
+  maybeShowMondayModal();
+}
+function defaultModes(){
+  const m = {};
+  DAY_NAMES.forEach(d=>{
+    if(d==='Sat') m[d]='home'; else if(d!=='Sun') m[d]='heavy';
+  });
+  return m;
+}
+function defaultGymDays(){
+  // starting suggestion for 3-4x/week — toggle any day on/off
+  return {Mon:false, Tue:true, Wed:true, Thu:false, Fri:true, Sat:true, Sun:false};
+}
+
+/* ===================================================================
+   DASHBOARD
+=================================================================== */
+function completion(tasks){
+  if(!tasks.length) return {done:0,total:0,pct:0};
+  const done = tasks.filter(t=>t.done).length;
+  return {done, total:tasks.length, pct: Math.round(done/tasks.length*100)};
+}
+function renderDashboard(){
+  const thisC = completion(STATE.tasks);
+  const lastC = completion(STATE.lastWeekTasks);
+  document.getElementById('progThis').style.width = thisC.pct+'%';
+  document.getElementById('progThisPct').textContent = thisC.pct+'%';
+  document.getElementById('progLast').style.width = lastC.pct+'%';
+  document.getElementById('progLastPct').textContent = lastC.pct+'%';
+  const note = document.getElementById('progNote');
+  if(!thisC.total && !lastC.total){ note.textContent = 'Add tasks in the Tasks tab to start tracking.'; }
+  else {
+    const diff = thisC.pct - lastC.pct;
+    note.textContent = diff===0 ? 'Even with last week so far.' : (diff>0 ? `Up ${diff}% from last week.` : `Down ${Math.abs(diff)}% from last week — still time to close it.`);
+  }
+
+  // non-negotiables
+  const nnList = document.getElementById('nnList');
+  nnList.innerHTML = '';
+  const nns = STATE.weekdata.nonNegotiables || [];
+  if(!nns.length){
+    nnList.innerHTML = '<p class="empty">No non-negotiables set yet — set your Monday intention to add three.</p>';
+  } else {
+    nns.forEach((nn, i)=>{
+      const row = document.createElement('div');
+      row.className = 'nn-item';
+      row.innerHTML = `<input type="checkbox" ${nn.done?'checked':''}> <span class="${nn.done?'done':''}">${escapeHtml(nn.text)}</span>`;
+      row.querySelector('input').addEventListener('change', async e=>{
+        STATE.weekdata.nonNegotiables[i].done = e.target.checked;
+        await setData('weekdata:'+WEEK_KEY, STATE.weekdata);
+        renderDashboard();
+      });
+      nnList.appendChild(row);
+    });
+  }
+
+  // 12 week priorities preview
+  const weekNum = getWeekNumber();
+  document.getElementById('twYearSub').textContent = `Week ${weekNum} of 12`;
+  const dashGoals = document.getElementById('dashGoals');
+  dashGoals.innerHTML = '';
+  if(!STATE.goals.length){
+    dashGoals.innerHTML = '<p class="empty">No goals yet — add them in the 12 Week Year tab.</p>';
+  } else {
+    const sorted = [...STATE.goals].sort((a,b)=> priorityRank(a.priority)-priorityRank(b.priority));
+    sorted.forEach(g=>{
+      const row = document.createElement('div');
+      row.className = 'goal-row';
+      const score = goalWeekScore(g, weekNum);
+      const scoreTxt = score.total ? `${score.pct}%` : 'no tactics yet';
+      row.innerHTML = `<span>${escapeHtml(g.title)}</span><span class="pill pill-${g.priority}">${g.priority} · ${scoreTxt}</span>`;
+      dashGoals.appendChild(row);
+    });
+  }
+}
+function priorityRank(p){ return p==='high'?0:p==='medium'?1:2; }
+function getWeekNumber(){
+  const start = STATE.programStart ? new Date(STATE.programStart) : MONDAY;
+  const diffDays = Math.round((MONDAY - start) / 86400000);
+  const wk = Math.floor(diffDays / 7) + 1;
+  return Math.min(12, Math.max(1, wk));
+}
+function goalWeekScore(g, weekNum){
+  const tactics = g.tactics || [];
+  const wd = (g.weekData && g.weekData[weekNum]) || {};
+  const total = tactics.length;
+  const done = tactics.filter(t=>wd[t.id]).length;
+  return {done, total, pct: total ? Math.round(done/total*100) : 0};
+}
+function escapeHtml(s){
+  const d = document.createElement('div'); d.textContent = s||''; return d.innerHTML;
+}
+
+document.getElementById('openIntentionBtn').addEventListener('click', ()=> openMondayModal(true));
+
+/* ===================================================================
+   ROTATION TOGGLE
+=================================================================== */
+function renderRotation(){
+  const wed = document.getElementById('toggleWed');
+  const thu = document.getElementById('toggleThu');
+  wed.classList.toggle('right', STATE.rotation.wed==='free');
+  thu.classList.toggle('right', STATE.rotation.thu==='rest');
+  wed.onclick = async ()=>{
+    STATE.rotation.wed = STATE.rotation.wed==='bible' ? 'free' : 'bible';
+    await setData('rotation', STATE.rotation);
+    renderRotation(); renderSchedule(); renderTasksTab();
+  };
+  thu.onclick = async ()=>{
+    STATE.rotation.thu = STATE.rotation.thu==='therapy' ? 'rest' : 'therapy';
+    await setData('rotation', STATE.rotation);
+    renderRotation(); renderSchedule(); renderTasksTab();
+  };
+}
+
+/* ===================================================================
+   SCHEDULE TAB
+=================================================================== */
+function renderModeControls(){
+  const wrap = document.getElementById('modeControls');
+  wrap.innerHTML = '';
+  DAY_NAMES.forEach(d=>{
+    if(d==='Sun') return;
+    const chip = document.createElement('div');
+    chip.className = 'mode-chip';
+    const options = d==='Sat' ? ['home','travel'] : ['heavy','light'];
+    const labels = d==='Sat' ? ['Home','Travel'] : ['Heavy','Light'];
+    chip.innerHTML = `<div class="day-lbl">${d}</div>
+      <div class="mini-toggle">
+        <button data-val="${options[0]}" class="${STATE.scheduleModes[d]===options[0]?'on':''}">${labels[0]}</button>
+        <button data-val="${options[1]}" class="${STATE.scheduleModes[d]===options[1]?'on':''}">${labels[1]}</button>
+      </div>`;
+    chip.querySelectorAll('button').forEach(b=>{
+      b.addEventListener('click', async ()=>{
+        STATE.scheduleModes[d] = b.dataset.val;
+        await setData('scheduleModes:'+WEEK_KEY, STATE.scheduleModes);
+        renderModeControls(); renderSchedule(); renderTasksTab();
+      });
+    });
+    wrap.appendChild(chip);
+  });
+}
+function renderGymControls(){
+  const wrap = document.getElementById('gymControls');
+  wrap.innerHTML = '';
+  DAY_NAMES.forEach(d=>{
+    const on = !!STATE.gymDays[d];
+    const chip = document.createElement('div');
+    chip.className = 'mode-chip';
+    chip.innerHTML = `<div class="day-lbl">${d}</div>
+      <div class="mini-toggle">
+        <button data-val="off" class="${!on?'on':''}">Off</button>
+        <button data-val="on" class="${on?'on':''}">Gym</button>
+      </div>`;
+    chip.querySelectorAll('button').forEach(b=>{
+      b.addEventListener('click', async ()=>{
+        STATE.gymDays[d] = b.dataset.val==='on';
+        await setData('gymDays:'+WEEK_KEY, STATE.gymDays);
+        renderGymControls(); renderSchedule(); renderTasksTab();
+      });
+    });
+    wrap.appendChild(chip);
+  });
+}
+function timeToRow(t){
+  const [h,m] = t.split(':').map(Number);
+  return (h-6)*2 + (m>=30?1:0) + 2; // +2: row1 = day headers
+}
+function renderSchedule(){
+  renderModeControls();
+  renderGymControls();
+  const grid = document.getElementById('schedGrid');
+  grid.innerHTML = '';
+  grid.style.gridTemplateRows = `32px repeat(34, 20px)`;
+
+  // corner
+  const corner = document.createElement('div'); corner.style.gridColumn='1'; corner.style.gridRow='1';
+  grid.appendChild(corner);
+
+  // day headers
+  DAY_NAMES.forEach((d,i)=>{
+    const head = document.createElement('div');
+    head.className = 'day-head';
+    head.style.gridColumn = (i+2);
+    head.style.gridRow = 1;
+    head.innerHTML = `${DAY_FULL[i]}<b>${fmtShort(WEEK_DATES[i])}</b>`;
+    grid.appendChild(head);
+  });
+
+  // time labels every hour
+  for(let h=6; h<=23; h++){
+    const lbl = document.createElement('div');
+    lbl.className = 'time-lbl';
+    lbl.style.gridRow = ((h-6)*2 + 2);
+    lbl.style.gridColumn = 1;
+    lbl.textContent = (h>12 ? h-12 : h) + (h>=12?'p':'a');
+    grid.appendChild(lbl);
+  }
+
+  // blocks
+  DAY_NAMES.forEach((d,i)=>{
+    const mode = STATE.scheduleModes[d] || (d==='Sat'?'home':'heavy');
+    const blocks = getBlocksFor(d, mode, STATE.rotation, STATE.gymDays[d]);
+    blocks.forEach(b=>{
+      const cat = CATS[b.cat];
+      const div = document.createElement('div');
+      div.className = 'block';
+      div.style.gridColumn = (i+2);
+      div.style.gridRow = `${timeToRow(b.s)} / ${timeToRow(b.e)}`;
+      div.style.background = cat.color;
+      div.style.color = cat.text;
+      if(cat.border) div.style.border = cat.border;
+      div.innerHTML = `<span class="t">${b.s}–${b.e}</span>${b.label}`;
+      grid.appendChild(div);
+    });
+  });
+
+  // legend
+  const legend = document.getElementById('legend');
+  legend.innerHTML = Object.values(CATS).map(c=>`<span><i style="background:${c.color}"></i>${c.label}</span>`).join('');
+}
+
+/* ===================================================================
+   TASKS TAB
+=================================================================== */
+function renderTasksTab(){
+  const wrap = document.getElementById('dayCards');
+  wrap.innerHTML = '';
+  DAY_NAMES.slice(0,5).forEach((d,i)=>{
+    const mode = STATE.scheduleModes[d] || 'heavy';
+    const blocks = getBlocksFor(d, mode, STATE.rotation, STATE.gymDays[d]);
+    const card = document.createElement('div');
+    card.className = 'day-card card';
+    const dayTasks = STATE.tasks.filter(t=>t.day===d);
+
+    const goalOptions = STATE.goals.map(g=>`<option value="${g.id}">${escapeHtml(g.title)}</option>`).join('');
+
+    card.innerHTML = `
+      <h3>${DAY_FULL[i]}</h3>
+      <div class="date">${fmtShort(WEEK_DATES[i])} · ${mode}</div>
+      <div class="mini-sched">
+        ${blocks.map(b=>`<div class="mini-block"><i style="background:${CATS[b.cat].color}"></i>${b.s} ${b.label}</div>`).join('')}
+      </div>
+      <div class="task-list" id="tasklist-${d}"></div>
+      <details class="add-task">
+        <summary>+ Add task</summary>
+        <div class="box">
+          <input type="text" placeholder="Task" class="t-text">
+          <select class="t-cat">${Object.entries(CATS).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('')}</select>
+          <select class="t-block"><option value="">No specific block</option>${blocks.map(b=>`<option value="${b.s}">${b.s} ${b.label}</option>`).join('')}</select>
+          <select class="t-goal"><option value="">No 12-week goal</option>${goalOptions}</select>
+          <button class="btn btn-primary btn-sm t-add">Add</button>
+        </div>
+      </details>
+    `;
+    wrap.appendChild(card);
+
+    const listEl = card.querySelector('.task-list');
+    if(!dayTasks.length){ listEl.innerHTML = '<p class="empty">No tasks yet.</p>'; }
+    dayTasks.forEach(t=>{
+      const item = document.createElement('div');
+      item.className = 'task-item';
+      const goal = STATE.goals.find(g=>g.id===t.goalId);
+      item.innerHTML = `<input type="checkbox" ${t.done?'checked':''}>
+        <div class="txt-wrap" style="flex:1;">
+          <div class="txt ${t.done?'done':''}">${escapeHtml(t.text)}</div>
+          <div class="meta">${CATS[t.cat]?.label||''}${t.block?' · '+t.block:''}${goal?' · '+escapeHtml(goal.title):''}</div>
+        </div>
+        <button class="del">×</button>`;
+      item.querySelector('input').addEventListener('change', async e=>{
+        t.done = e.target.checked;
+        await setData('tasks:'+WEEK_KEY, STATE.tasks);
+        renderTasksTab(); renderDashboard();
+      });
+      item.querySelector('.del').addEventListener('click', async ()=>{
+        STATE.tasks = STATE.tasks.filter(x=>x.id!==t.id);
+        await setData('tasks:'+WEEK_KEY, STATE.tasks);
+        renderTasksTab(); renderDashboard();
+      });
+      listEl.appendChild(item);
+    });
+
+    card.querySelector('.t-add').addEventListener('click', async ()=>{
+      const textEl = card.querySelector('.t-text');
+      const text = textEl.value.trim();
+      if(!text) return;
+      const cat = card.querySelector('.t-cat').value;
+      const block = card.querySelector('.t-block').value;
+      const goalId = card.querySelector('.t-goal').value;
+      STATE.tasks.push({id:'t'+Date.now()+Math.random().toString(16).slice(2), day:d, text, cat, block, goalId, done:false});
+      await setData('tasks:'+WEEK_KEY, STATE.tasks);
+      textEl.value='';
+      renderTasksTab(); renderDashboard();
+    });
+  });
+}
+
+/* ===================================================================
+   12 WEEK YEAR TAB
+=================================================================== */
+function renderProgramHeader(){
+  const weekNum = getWeekNumber();
+  const start = STATE.programStart ? new Date(STATE.programStart) : MONDAY;
+  const end = addDays(start, 83);
+  document.getElementById('twSub2').textContent = `Week ${weekNum} of 12`;
+  document.getElementById('twDates').textContent = `${fmtShort(start)} – ${fmtShort(end)}`;
+
+  // aggregate scoreboard across all goals for the current week
+  let done=0, total=0;
+  STATE.goals.forEach(g=>{
+    const s = goalWeekScore(g, weekNum);
+    done += s.done; total += s.total;
+  });
+  const pct = total ? Math.round(done/total*100) : null;
+  document.getElementById('scorePct').textContent = pct===null ? '—' : pct+'%';
+}
+function renderVision(){
+  const el = document.getElementById('visionText');
+  if(document.activeElement !== el) el.value = STATE.vision || '';
+}
+document.getElementById('visionText').addEventListener('change', async e=>{
+  STATE.vision = e.target.value;
+  await setData('twelveWeekVision', STATE.vision);
+});
+document.getElementById('resetProgramBtn').addEventListener('click', async ()=>{
+  if(!confirm('Start a new 12-week cycle from this week? This resets your week count to Week 1 — your goals and past tactic data stay saved.')) return;
+  STATE.programStart = WEEK_KEY;
+  await setData('twelveWeekProgramStart', STATE.programStart);
+  renderProgramHeader(); renderGoalsTab(); renderDashboard();
+});
+
+function renderGoalsTab(){
+  renderProgramHeader();
+  const wrap = document.getElementById('goalsFull');
+  wrap.innerHTML = '';
+  if(!STATE.goals.length){ wrap.innerHTML = '<p class="empty">No goals yet — add your first below.</p>'; return; }
+  const weekNum = getWeekNumber();
+
+  STATE.goals.forEach(g=>{
+    if(!g.tactics) g.tactics = [];
+    if(!g.weekData) g.weekData = {};
+    if(!g.weekData[weekNum]) g.weekData[weekNum] = {};
+    const score = goalWeekScore(g, weekNum);
+
+    const card = document.createElement('div');
+    card.className = 'goal-card';
+    card.innerHTML = `
+      <div class="goal-top">
+        <div style="font-weight:600;">${escapeHtml(g.title)}</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span class="pill pill-${g.priority}">${g.priority}</span>
+          <button class="btn btn-danger btn-sm del-goal">Remove</button>
+        </div>
+      </div>
+
+      <details class="add-task">
+        <summary>Reflection — why it matters, what's in the way, what it costs</summary>
+        <div class="box">
+          <div class="field"><label>Why does this goal matter to you right now?</label><textarea class="g-why" placeholder="Connect it to the bigger vision...">${escapeHtml(g.why||'')}</textarea></div>
+          <div class="field"><label>What's most likely to get in the way?</label><textarea class="g-obstacles" placeholder="Be specific — procrastination, travel, a certain client...">${escapeHtml(g.obstacles||'')}</textarea></div>
+          <div class="field"><label>What does it cost you if this doesn't happen?</label><textarea class="g-cost" placeholder="What stays the same, or gets worse, if you skip this 12 weeks?">${escapeHtml(g.cost||'')}</textarea></div>
+        </div>
+      </details>
+
+      <p class="sub" style="margin:14px 0 6px;">Weekly tactics — week ${weekNum} score: ${score.total ? `${score.done}/${score.total} (${score.pct}%)` : 'add a tactic below'}</p>
+      <div class="tactic-list"></div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <input type="text" class="tactic-input" placeholder="Add a tactic — a specific weekly action, not a vague hope">
+        <button class="btn btn-ghost btn-sm add-tactic-btn">Add</button>
+      </div>
+
+      <p class="sub" style="margin:16px 0 4px;">12-week arc</p>
+      <div class="week-track">
+        ${Array.from({length:12}).map((_,i)=>{
+          const s = goalWeekScore(g, i+1);
+          const doneClass = s.total && s.pct>=70 ? 'done' : '';
+          const curClass = (i+1===weekNum) ? 'current' : '';
+          const title = s.total ? s.pct+'% executed' : 'no tactics logged';
+          return `<div class="wk-cell ${doneClass} ${curClass}" title="${title}">${i+1}</div>`;
+        }).join('')}
+      </div>
+    `;
+
+    // reflection fields
+    card.querySelector('.g-why').addEventListener('change', async e=>{ g.why = e.target.value; await setData('goals12week', STATE.goals); });
+    card.querySelector('.g-obstacles').addEventListener('change', async e=>{ g.obstacles = e.target.value; await setData('goals12week', STATE.goals); });
+    card.querySelector('.g-cost').addEventListener('change', async e=>{ g.cost = e.target.value; await setData('goals12week', STATE.goals); });
+
+    // tactics list
+    const tacticList = card.querySelector('.tactic-list');
+    if(!g.tactics.length){
+      tacticList.innerHTML = '<p class="empty">No tactics yet — add the specific actions that ladder up to this goal.</p>';
+    } else {
+      g.tactics.forEach(t=>{
+        const row = document.createElement('div');
+        row.className = 'task-item';
+        const checked = !!g.weekData[weekNum][t.id];
+        row.innerHTML = `<input type="checkbox" ${checked?'checked':''}>
+          <div class="txt-wrap" style="flex:1;"><div class="txt ${checked?'done':''}">${escapeHtml(t.text)}</div></div>
+          <button class="del">×</button>`;
+        row.querySelector('input').addEventListener('change', async e=>{
+          g.weekData[weekNum][t.id] = e.target.checked;
+          await setData('goals12week', STATE.goals);
+          renderGoalsTab(); renderDashboard();
+        });
+        row.querySelector('.del').addEventListener('click', async ()=>{
+          g.tactics = g.tactics.filter(x=>x.id!==t.id);
+          await setData('goals12week', STATE.goals);
+          renderGoalsTab(); renderDashboard();
+        });
+        tacticList.appendChild(row);
+      });
+    }
+
+    card.querySelector('.add-tactic-btn').addEventListener('click', async ()=>{
+      const input = card.querySelector('.tactic-input');
+      const text = input.value.trim();
+      if(!text) return;
+      g.tactics.push({id:'tac'+Date.now()+Math.random().toString(16).slice(2), text});
+      await setData('goals12week', STATE.goals);
+      renderGoalsTab(); renderDashboard(); renderTasksTab();
+    });
+
+    card.querySelector('.del-goal').addEventListener('click', async ()=>{
+      STATE.goals = STATE.goals.filter(x=>x.id!==g.id);
+      await setData('goals12week', STATE.goals);
+      renderGoalsTab(); renderDashboard(); renderTasksTab();
+    });
+
+    wrap.appendChild(card);
+  });
+}
+document.getElementById('addGoalBtn').addEventListener('click', async ()=>{
+  const title = document.getElementById('goalTitle').value.trim();
+  if(!title) return;
+  const priority = document.getElementById('goalPriority').value;
+  STATE.goals.push({id:'g'+Date.now(), title, priority, why:'', obstacles:'', cost:'', tactics:[], weekData:{}});
+  await setData('goals12week', STATE.goals);
+  document.getElementById('goalTitle').value='';
+  renderGoalsTab(); renderDashboard(); renderTasksTab();
+});
+
+/* ===================================================================
+   FRIDAY REVIEW TAB
+=================================================================== */
+const MOODS = ['Grounded','Grateful','Stretched thin','Proud','Discouraged','Recharged'];
+let selectedMood = null;
+function renderReviewTab(){
+  document.getElementById('reviewSub').textContent = `Week of ${fmtShort(MONDAY)} – ${fmtShort(addDays(MONDAY,6))}`;
+  const moodRow = document.getElementById('moodRow');
+  moodRow.innerHTML = '';
+  const r = STATE.review || {};
+  selectedMood = r.feeling || null;
+  MOODS.forEach(m=>{
+    const b = document.createElement('button');
+    b.className = 'mood-btn' + (selectedMood===m ? ' sel':'');
+    b.textContent = m;
+    b.addEventListener('click', ()=>{
+      selectedMood = m;
+      moodRow.querySelectorAll('.mood-btn').forEach(x=>x.classList.remove('sel'));
+      b.classList.add('sel');
+    });
+    moodRow.appendChild(b);
+  });
+  document.getElementById('rvWins').value = r.wins || '';
+  document.getElementById('rvAvoided').value = r.avoided || '';
+  document.getElementById('rvCarry').value = r.carry || '';
+  document.getElementById('rvBlocks').value = r.blocks || '';
+  document.getElementById('rvFaith').value = r.faith || '';
+  document.getElementById('reviewSaved').textContent = r.savedAt ? `Saved ${r.savedAt}` : '';
+}
+document.getElementById('saveReviewBtn').addEventListener('click', async ()=>{
+  const savedAt = new Date().toLocaleString('en-US',{hour:'numeric',minute:'2-digit',month:'short',day:'numeric'});
+  STATE.review = {
+    wins: document.getElementById('rvWins').value,
+    avoided: document.getElementById('rvAvoided').value,
+    carry: document.getElementById('rvCarry').value,
+    blocks: document.getElementById('rvBlocks').value,
+    faith: document.getElementById('rvFaith').value,
+    feeling: selectedMood,
+    savedAt
+  };
+  await setData('fridayreview:'+WEEK_KEY, STATE.review);
+  renderReviewTab();
+  showToast('Friday review saved');
+});
+
+/* ===================================================================
+   BUDGET TAB
+=================================================================== */
+function monthKey(dateStr){ return dateStr.slice(0,7); }
+function renderBudgetTab(){
+  document.getElementById('weeklyPay').value = STATE.budget.weeklyPay || '';
+  const thisMonth = monthKey(isoDate(new Date()));
+  const monthEntries = STATE.budget.entries.filter(e=>monthKey(e.date)===thisMonth);
+  const totalSpent = monthEntries.reduce((s,e)=>s+Number(e.amount||0),0);
+  const totalBudget = STATE.budget.categories.reduce((s,c)=>s+Number(c.budget||0),0);
+
+  const stats = document.getElementById('budgetStats');
+  stats.innerHTML = `
+    <div class="stat-tile"><div class="num">$${(STATE.budget.weeklyPay||0).toLocaleString()}</div><div class="lbl">Weekly pay</div></div>
+    <div class="stat-tile"><div class="num">$${totalSpent.toLocaleString(undefined,{maximumFractionDigits:0})}</div><div class="lbl">Spent this month</div></div>
+    <div class="stat-tile"><div class="num">$${(totalBudget-totalSpent).toLocaleString(undefined,{maximumFractionDigits:0})}</div><div class="lbl">Remaining vs budget</div></div>
+  `;
+
+  const rows = document.getElementById('budgetRows');
+  rows.innerHTML = '';
+  STATE.budget.categories.forEach((c,i)=>{
+    const spent = monthEntries.filter(e=>e.category===c.name).reduce((s,e)=>s+Number(e.amount||0),0);
+    const remaining = (c.budget||0) - spent;
+    const pct = c.budget ? Math.min(100, Math.round(spent/c.budget*100)) : 0;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${escapeHtml(c.name)}
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${pct}%"></div></div>
+      </td>
+      <td><input type="number" class="cat-budget" value="${c.budget||0}" style="width:90px;"></td>
+      <td>$${spent.toLocaleString(undefined,{maximumFractionDigits:0})}</td>
+      <td style="color:${remaining<0?'#ff9aa2':'inherit'}">$${remaining.toLocaleString(undefined,{maximumFractionDigits:0})}</td>
+      <td><button class="del" style="background:none;border:none;color:rgba(253,246,236,0.4);cursor:pointer;">×</button></td>
+    `;
+    tr.querySelector('.cat-budget').addEventListener('change', async e=>{
+      c.budget = Number(e.target.value)||0;
+      await setData('budget', STATE.budget);
+      renderBudgetTab();
+    });
+    tr.querySelector('.del').addEventListener('click', async ()=>{
+      STATE.budget.categories.splice(i,1);
+      await setData('budget', STATE.budget);
+      renderBudgetTab();
+    });
+    rows.appendChild(tr);
+  });
+
+  const catSelect = document.getElementById('spendCat');
+  catSelect.innerHTML = STATE.budget.categories.map(c=>`<option value="${escapeHtml(c.name)}">${escapeHtml(c.name)}</option>`).join('');
+  document.getElementById('spendDate').value = isoDate(new Date());
+
+  // recent entries
+  const listEl = document.getElementById('spendList');
+  const recent = [...STATE.budget.entries].sort((a,b)=> b.date.localeCompare(a.date)).slice(0,15);
+  listEl.innerHTML = recent.length ? recent.map(e=>`
+    <div class="task-item">
+      <div class="txt-wrap" style="flex:1;">
+        <div class="txt">${escapeHtml(e.category)} — $${Number(e.amount).toLocaleString()}${e.note?' · '+escapeHtml(e.note):''}</div>
+        <div class="meta">${e.date}</div>
+      </div>
+      <button class="del" data-id="${e.id}">×</button>
+    </div>`).join('') : '<p class="empty">No spending logged yet.</p>';
+  listEl.querySelectorAll('.del').forEach(b=>{
+    b.addEventListener('click', async ()=>{
+      STATE.budget.entries = STATE.budget.entries.filter(x=>x.id!==b.dataset.id);
+      await setData('budget', STATE.budget);
+      renderBudgetTab();
+    });
+  });
+}
+document.getElementById('weeklyPay').addEventListener('change', async e=>{
+  STATE.budget.weeklyPay = Number(e.target.value)||0;
+  await setData('budget', STATE.budget);
+  renderBudgetTab();
+});
+document.getElementById('addCatBtn').addEventListener('click', async ()=>{
+  const name = prompt('New category name:');
+  if(!name) return;
+  STATE.budget.categories.push({name, budget:0});
+  await setData('budget', STATE.budget);
+  renderBudgetTab();
+});
+document.getElementById('addSpendBtn').addEventListener('click', async ()=>{
+  const date = document.getElementById('spendDate').value || isoDate(new Date());
+  const category = document.getElementById('spendCat').value;
+  const amount = Number(document.getElementById('spendAmt').value);
+  const note = document.getElementById('spendNote').value;
+  if(!amount) return;
+  STATE.budget.entries.push({id:'s'+Date.now(), date, category, amount, note});
+  await setData('budget', STATE.budget);
+  document.getElementById('spendAmt').value=''; document.getElementById('spendNote').value='';
+  renderBudgetTab();
+  showToast('Spend logged');
+});
+
+/* ===================================================================
+   MONDAY MODAL
+=================================================================== */
+function maybeShowMondayModal(){
+  const isMonday = TODAY.getDay() === 1;
+  if(isMonday && !STATE.weekdata.mondaySet){
+    openMondayModal(false);
+  }
+}
+function openMondayModal(prefill){
+  const m = document.getElementById('mondayModal');
+  document.getElementById('modalIntention').value = STATE.weekdata.intention || '';
+  const nns = STATE.weekdata.nonNegotiables || [];
+  document.getElementById('modalNN1').value = nns[0]?.text || '';
+  document.getElementById('modalNN2').value = nns[1]?.text || '';
+  document.getElementById('modalNN3').value = nns[2]?.text || '';
+  m.classList.add('show');
+}
+document.getElementById('modalSkip').addEventListener('click', ()=>{
+  document.getElementById('mondayModal').classList.remove('show');
+});
+document.getElementById('modalSave').addEventListener('click', async ()=>{
+  const intention = document.getElementById('modalIntention').value.trim();
+  const texts = [document.getElementById('modalNN1').value.trim(), document.getElementById('modalNN2').value.trim(), document.getElementById('modalNN3').value.trim()].filter(Boolean);
+  STATE.weekdata.intention = intention;
+  STATE.weekdata.nonNegotiables = texts.map(t=>({text:t, done:false}));
+  STATE.weekdata.mondaySet = true;
+  await setData('weekdata:'+WEEK_KEY, STATE.weekdata);
+  document.getElementById('mondayModal').classList.remove('show');
+  renderDashboard();
+  showToast('Week intention set — let\'s go');
+});
+
+/* ===================================================================
+   GOOGLE CALENDAR EXPORT (.ics)
+=================================================================== */
+function pad(n){ return String(n).padStart(2,'0'); }
+function icsDate(date, timeStr){
+  const [h,m] = timeStr.split(':').map(Number);
+  const d = new Date(date);
+  d.setHours(h, m, 0, 0);
+  return d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'T'+pad(d.getHours())+pad(d.getMinutes())+'00';
+}
+document.getElementById('gcalBtn').addEventListener('click', ()=>{
+  let ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Command Center//EN\r\n';
+  DAY_NAMES.forEach((d,i)=>{
+    const mode = STATE.scheduleModes[d] || (d==='Sat'?'home':'heavy');
+    const blocks = getBlocksFor(d, mode, STATE.rotation, STATE.gymDays[d]);
+    blocks.forEach(b=>{
+      ics += 'BEGIN:VEVENT\r\n';
+      ics += 'UID:'+Date.now()+Math.random().toString(16).slice(2)+'@commandcenter\r\n';
+      ics += 'DTSTART:'+icsDate(WEEK_DATES[i], b.s)+'\r\n';
+      ics += 'DTEND:'+icsDate(WEEK_DATES[i], b.e)+'\r\n';
+      ics += 'SUMMARY:'+b.label+'\r\n';
+      ics += 'END:VEVENT\r\n';
+    });
+  });
+  ics += 'END:VCALENDAR';
+  const blob = new Blob([ics], {type:'text/calendar'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'command-center-week.ics';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Calendar file downloaded — import it in Google Calendar');
+});
+
+init();
+</script>
+</body>
+</html>
